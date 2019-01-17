@@ -29,7 +29,7 @@
 
 <script>
 import axios from "axios";
-import util from "../util";
+import { isURL} from "../util";
 
 export default {
   data() {
@@ -50,12 +50,12 @@ export default {
       if (!this.url.startsWith('http://') && !this.url.startsWith('https://')) {
         this.url = 'http://' + this.url
       }
-      if (!util.isURL(this.url)) {
+      if (!isURL(this.url)) {
         this.error = "Invalid URL"
         return
       }
       let result = await axios({
-        url: "http://localhost:3000/graphql",
+        url: process.env.VUE_APP_API,
         method: "post",
         data: {
           query: `

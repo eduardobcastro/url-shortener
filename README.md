@@ -1,8 +1,10 @@
-# url-shortener
+# url-shortener-frontend
 
 ## Project setup
 ```
 yarn install
+
+echo "VUE_APP_API=http://localhost:3000/graphql" > .env.local
 ```
 
 ### Compiles and hot-reloads for development

@@ -27,7 +27,7 @@ export default {
   },
   mounted() {
     axios({
-      url: "http://localhost:3000/graphql",
+      url: process.env.VUE_APP_API,
       method: "post",
       data: {
         query: `
