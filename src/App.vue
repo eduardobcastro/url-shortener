@@ -1,17 +1,32 @@
 <template>
-  <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
-  </div>
+  <b-container id="app">
+    <b-row>
+      <b-col>
+        <h1>URL Shortener</h1>
+        <Shortener />
+        <br>
+        <br>
+        <TopURLs />
+      </b-col>
+    </b-row>
+  </b-container>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+import Vue from 'vue'
+import Shortener from './components/Shortener.vue'
+import TopURLs from './components/TopURLs.vue'
+import BootstrapVue from 'bootstrap-vue'
+import 'bootstrap/dist/css/bootstrap.css'
+import 'bootstrap-vue/dist/bootstrap-vue.css'
+
+Vue.use(BootstrapVue)
 
 export default {
-  name: 'app',
+  name: 'App',
   components: {
-    HelloWorld
+    Shortener,
+    TopURLs
   }
 }
 </script>
