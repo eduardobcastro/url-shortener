@@ -1,36 +1,63 @@
 # url-shortener-frontend
 
-## Project setup
+## Build Frontend Docker image
 ```
-yarn install
-
-echo "VUE_APP_API=http://localhost:3000/graphql" > .env.local
+yarn build:docker
 ```
 
-### Compiles and hot-reloads for development
+## Clone and build the API Docker image
+See [API](https://github.com/eduardobcastro/url-shortener-api)
+
 ```
-yarn run serve
+git clone https://github.com/eduardobcastro/url-shortener-api.git
+cd url-shortener-api
+yarn build:docker
 ```
 
-### Compiles and minifies for production
-```
-yarn run build
-```
+## Start
 
-### Run your tests
 ```
-yarn run test
-```
+docker swarm init
 
-### Lints and fixes files
-```
-yarn run lint
-```
+cat | docker stack deploy -c - url-shortener << 'EOF'
+version: "3.3"
+networks:
+  shortener-net: null
+services:
+  couchdb:
+    deploy:
+      placement: { constraints: ["node.role == manager"] }
+    image: "couchdb"
+    networks:
+      - shortener-net
+    volumes:
+      - "couchdb_data:/opt/couchdb/data"
+  api:
+    command: "yarn serve"
+    depends_on:
+      - couchdb
+    deploy:
+      restart_policy:
+        condition: on-failure
+    environment:
+      - COUCHDB_URL=http://couchdb:5984
+    image: url-shortener-api
+    networks:
+      - shortener-net
+  front-end:
+    depends_on:
+      - "api"
+    deploy:
+      placement:
+        constraints:
+          - "node.role == manager"
+    image: url-shortener-frontend
+    networks:
+      - shortener-net
+    ports:
+      - "0.0.0.0:80:80"
+volumes:
+  couchdb_data:
+EOF
 
-### Run your unit tests
 ```
-yarn run test:unit
-```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
